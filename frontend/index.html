@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="patientForm">
+        <h2>Add Patient</h2>
+        <form id="addPatientForm">
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+            <label for="age">Age:</label><br>
+            <input type="number" id="age" name="age" required><br><br>
+            <label for="address">Address:</label><br>
+            <input type="text" id="address" name="address" required><br><br>
+            <button type="submit">Add Patient</button>
+        </form>
+    </div>
+    <div id="patientSearch">
+        <h2>Search Patient</h2>
+        <form id="searchPatientForm">
+            <label for="searchName">Search by Name:</label><br>
+            <input type="text" id="searchName" name="searchName" required><br><br>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <script src="config.js"></script>
+    <script src="index.js"></script>
+</body>
+</html>

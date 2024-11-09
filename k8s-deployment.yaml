@@ -1,0 +1,169 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: patient-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: patient-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: nagatanmayee/assignment1-frontend:latest
+          ports:
+            - containerPort: 80
+          env:
+#            - name: ADD_PORT
+#              value: 3001
+#            - name: SEARCH_PORT
+#              value: 3002
+#            - name: LOAD_BALANCER_IP
+#              value: "http://patient-add-service.patient-app.svc.cluster.local:3001"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-add-service
+  namespace: patient-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patient-add-service
+  template:
+    metadata:
+      labels:
+        app: patient-add-service
+    spec:
+      containers:
+        - name: patient-add-service
+          image: nagatanmayee/assignment1-patient-add-service:latest
+          ports:
+            - containerPort: 3001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-search-service
+  namespace: patient-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patient-search-service
+  template:
+    metadata:
+      labels:
+        app: patient-search-service
+    spec:
+      containers:
+        - name: patient-search-service
+          image: nagatanmayee/assignment1-patient-search-service:latest
+          ports:
+            - containerPort: 3002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongodb
+  namespace: patient-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - name: mongo-persistent-storage
+              mountPath: /data/db
+      volumes:
+        - name: mongo-persistent-storage
+          persistentVolumeClaim:
+            claimName: mongodb-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: patient-app
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: patient-add-service
+  namespace: patient-app
+spec:
+  selector:
+    app: patient-add-service
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: patient-search-service
+  namespace: patient-app
+spec:
+  selector:
+    app: patient-search-service
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: 3002
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  namespace: patient-app
+spec:
+  selector:
+    app: mongodb
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongodb-pvc
+  namespace: patient-app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

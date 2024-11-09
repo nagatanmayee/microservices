@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ${DOCKER_USERNAME}/assignment1-frontend:latest
+    ports:
+      - "8080:80"
+
+  patient-add-service:
+    build:
+      context: ./patient-add-service
+      dockerfile: Dockerfile
+    image: ${DOCKER_USERNAME}/assignment1-patient-add-service:latest
+    ports:
+      - "3001:3001"
+
+  patient-search-service:
+    build:
+      context: ./patient-search-service
+      dockerfile: Dockerfile
+    image: ${DOCKER_USERNAME}/assignment1-patient-search-service:latest
+    ports:
+      - "3002:3002"
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongodb/data:/data/db
