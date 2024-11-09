@@ -35,8 +35,7 @@ kubectl -n patient-app scale deploy patient-add-service --replicas=1
 kubectl -n patient-app scale deploy patient-search-service --replicas=1
 ```
 
-### Open front end app here: 
-[Web application home page](http://localhost:80)
+### Open front end app here: http://localhost:80
 
 ### Sample application home page:
 ![Screenshot of the app](images/1.png)
